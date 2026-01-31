@@ -1,4 +1,4 @@
-# MedCare - Workspace - PROJECT WORK
+# MedCare - Workspace
 
 Questo workspace contiene il frontend `portal` e tutti i microservizi BE.
 
@@ -10,6 +10,7 @@ Questo workspace contiene il frontend `portal` e tutti i microservizi BE.
 - `doc-repo` (Spring Boot, MongoDB)
 - `notification` (Spring Boot, MongoDB + SMTP)
 - `billing` (Spring Boot, SQL Server)
+- `data_setup` (script di seed demo)
 
 ## Requisiti
 
@@ -18,7 +19,7 @@ Questo workspace contiene il frontend `portal` e tutti i microservizi BE.
 - Node.js LTS (consigliato 20.x)
 - SQL Server su `127.0.0.1:1433`
 - MongoDB su `127.0.0.1:27017`
-- Docker (opzionale, per MailHog, per DB)
+- Docker (opzionale, per MailHog)
 
 ## Porte
 
@@ -120,8 +121,13 @@ ng serve --proxy-config proxy.conf.json
 - Notification: `http://localhost:8083/swagger-ui.html`
 - Billing: `http://localhost:8084/swagger-ui.html`
 
+## Dati demo
+
+Per inserire dati di test:
+
+- `data_setup/README.md`
+
 ## Note
 
 - Il frontend usa `portal/proxy.conf.json` per chiamare i microservizi.
 - Se cambi porte/host aggiorna `application.properties` e il `proxy.conf.json`.
-

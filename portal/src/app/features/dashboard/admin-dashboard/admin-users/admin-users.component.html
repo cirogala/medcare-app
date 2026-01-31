@@ -1,0 +1,332 @@
+<!-- ========================= -->
+<!-- NUOVA UTENZA INTERNA -->
+<!-- ========================= -->
+<section class="card card-elevated">
+  <h2 class="card-title">Nuova utenza interna</h2>
+
+  <form class="form-grid" (ngSubmit)="createInternalUser()">
+    <input [(ngModel)]="newInternalUser.nome" name="nomeInt" placeholder="Nome" required />
+    <input [(ngModel)]="newInternalUser.cognome" name="cognomeInt" placeholder="Cognome" required />
+    <input [(ngModel)]="newInternalUser.email" name="emailInt" placeholder="Email" type="email" required />
+
+    <input [(ngModel)]="newInternalUser.citta" name="cittaInt" placeholder="Città" required />
+    <input [(ngModel)]="newInternalUser.indirizzo" name="indirizzoInt" placeholder="Indirizzo" required />
+    <input [(ngModel)]="newInternalUser.codiceFiscale" name="cfInt" placeholder="Codice Fiscale" required />
+    <input [(ngModel)]="newInternalUser.telefono" name="telefonoInt" placeholder="Telefono" required />
+
+    <button type="submit" [disabled]="creatingInternalUser">
+      {{ creatingInternalUser ? 'Creazione in corso…' : 'Crea utenza interna' }}
+    </button>
+  </form>
+
+  <p class="info">
+    Username e password verranno generati automaticamente e inviati via email.
+  </p>
+
+  <p class="error" *ngIf="internalUserError">{{ internalUserError }}</p>
+</section>
+
+<!-- ========================= -->
+<!-- UTENTI -->
+<!-- ========================= -->
+<section class="card card-elevated">
+  <h2 class="card-title">Utenti</h2>
+
+  <div class="tabs">
+    <button
+      class="tab-btn"
+      [class.active]="selectedTab === 'internal'"
+      (click)="setTab('internal')"
+    >
+      Utenti interni
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="selectedTab === 'external'"
+      (click)="setTab('external')"
+    >
+      Utenti esterni
+    </button>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="🔍 Cerca per nome o cognome"
+      [(ngModel)]="searchTerm"
+      (input)="applyFilter()"
+    />
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper" *ngIf="paginatedUsers.length > 0 && !loading; else empty">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Utente</th>
+          <th>Email</th>
+          <th>Codice Fiscale</th>
+          <th>Città</th>
+          <th>Ruolo</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let u of paginatedUsers">
+          <td class="id">{{ u.userId }}</td>
+
+          <td class="name">
+            <div class="fullname">{{ u.nome }} {{ u.cognome }}</div>
+            <div class="username">{{ u.username }}</div>
+          </td>
+
+          <td>{{ u.email }}</td>
+          <td>{{ u.codiceFiscale }}</td>
+          <td>{{ u.citta }}</td>
+
+          <td>
+            <span class="badge badge-role">{{ u.role }}</span>
+          </td>
+
+          <td *ngIf="selectedTab === 'external'">
+            <button
+              class="action-btn"
+              [class.active]="selectedUser?.userId === u.userId"
+              (click)="openFascicolo(u)"
+            >
+              📁 Fascicolo
+            </button>
+          </td>
+
+          <td *ngIf="selectedTab === 'internal'">
+            <button
+              class="action-btn"
+              [class.active]="selectedInternalUser?.userId === u.userId"
+              (click)="openInternalProfile(u)"
+            >
+              👤 Profilo
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- EMPTY -->
+  <ng-template #empty>
+    <p class="empty" *ngIf="!loading">Nessun utente trovato</p>
+    <p class="loading" *ngIf="loading">Caricamento utenti...</p>
+  </ng-template>
+
+  <!-- PAGINATION -->
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button
+      [disabled]="currentPage === 1"
+      (click)="currentPage = currentPage - 1"
+    >
+      ‹
+    </button>
+
+    <label class="page-select">
+      Pagina
+      <select [(ngModel)]="currentPage">
+        <option *ngFor="let page of pageOptions" [value]="page">
+          {{ page }}
+        </option>
+      </select>
+      / {{ totalPages }}
+    </label>
+
+    <button
+      [disabled]="currentPage === totalPages"
+      (click)="currentPage = currentPage + 1"
+    >
+      ›
+    </button>
+  </div>
+</section>
+
+<!-- ========================= -->
+<!-- FASCICOLO PAZIENTE -->
+<!-- ========================= -->
+<section class="card card-elevated" *ngIf="selectedUser as su" #fascicoloSection>
+  <div class="section-header">
+    <div>
+      <h2 class="card-title">Fascicolo paziente</h2>
+      <p class="subtitle">Referti di {{ su.nome }} {{ su.cognome }}</p>
+    </div>
+    <button
+      class="edit-btn"
+      *ngIf="!editingExternalUser"
+      (click)="enableExternalEdit()"
+    >
+      Modifica dati
+    </button>
+  </div>
+
+  <div class="patient-info" *ngIf="!editingExternalUser; else editExternal">
+    <div class="info-row">
+      <span class="label">Nome</span>
+      <span class="value">{{ su.nome }} {{ su.cognome }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Username</span>
+      <span class="value">{{ su.username }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Email</span>
+      <span class="value">{{ su.email }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Codice Fiscale</span>
+      <span class="value">{{ su.codiceFiscale }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Città</span>
+      <span class="value">{{ su.citta }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Indirizzo</span>
+      <span class="value">{{ su.indirizzo }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Telefono</span>
+      <span class="value">{{ su.telefono || 'Non disponibile' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Ruolo</span>
+      <span class="value">{{ su.role }}</span>
+    </div>
+  </div>
+
+  <ng-template #editExternal>
+    <div class="profile-form">
+      <div class="form-grid">
+        <input [(ngModel)]="editingExternalUser!.nome" name="extNome" placeholder="Nome" required />
+        <input [(ngModel)]="editingExternalUser!.cognome" name="extCognome" placeholder="Cognome" required />
+        <input [(ngModel)]="editingExternalUser!.email" name="extEmail" placeholder="Email" type="email" required />
+        <input [(ngModel)]="editingExternalUser!.citta" name="extCitta" placeholder="Città" required />
+        <input [(ngModel)]="editingExternalUser!.indirizzo" name="extIndirizzo" placeholder="Indirizzo" required />
+        <input [(ngModel)]="editingExternalUser!.codiceFiscale" name="extCodiceFiscale" placeholder="Codice Fiscale" required />
+        <input [(ngModel)]="editingExternalUser!.telefono" name="extTelefono" placeholder="Telefono" required />
+      </div>
+
+      <div class="profile-actions">
+        <button class="primary" (click)="saveExternalProfile()" [disabled]="savingExternalUser">
+          {{ savingExternalUser ? 'Salvataggio…' : 'Salva modifiche' }}
+        </button>
+        <button class="secondary" (click)="cancelExternalEdit()">Annulla</button>
+      </div>
+    </div>
+  </ng-template>
+
+  <div *ngIf="fascicoloLoading" class="loading">Caricamento referti...</div>
+  <p class="error" *ngIf="fascicoloError">{{ fascicoloError }}</p>
+
+  <div *ngIf="!fascicoloLoading && !fascicoloError">
+    <p class="empty" *ngIf="fascicoloGroups.length === 0">
+      Nessun referto disponibile.
+    </p>
+
+    <div class="fascicolo-grid" *ngIf="fascicoloGroups.length > 0">
+      <div class="fascicolo-card" *ngFor="let group of fascicoloGroups">
+        <div class="fascicolo-header">
+          <div class="doctor-name">{{ doctorName(group.doctorId) }}</div>
+          <div class="doctor-id">ID medico: {{ group.doctorId }}</div>
+        </div>
+
+        <div class="report-list">
+          <div class="report-row" *ngFor="let r of group.reports">
+            <div class="report-main">
+              <div class="report-name">{{ r.filename || 'Referto' }}</div>
+              <div class="report-meta">
+                <span>{{ r.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                <span>{{ doctorName(group.doctorId) }}</span>
+                <span>{{ visitLabel(r.visitTypeId) }}</span>
+              </div>
+            </div>
+            <button class="download-btn" (click)="downloadReport(r)">Scarica</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= -->
+<!-- PROFILO UTENTE INTERNO -->
+<!-- ========================= -->
+<section class="card card-elevated" *ngIf="selectedInternalUser as iu">
+  <div class="section-header">
+    <div>
+      <h2 class="card-title">Profilo utente interno</h2>
+      <p class="subtitle">Dati anagrafici</p>
+    </div>
+    <button
+      class="edit-btn"
+      *ngIf="!editingInternalProfile"
+      (click)="enableInternalEdit()"
+    >
+      Modifica dati
+    </button>
+  </div>
+
+  <div class="patient-info" *ngIf="!editingInternalProfile; else editInternal">
+    <div class="info-row">
+      <span class="label">Nome</span>
+      <span class="value">{{ iu.nome }} {{ iu.cognome }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Username</span>
+      <span class="value">{{ iu.username }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Email</span>
+      <span class="value">{{ iu.email }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Codice Fiscale</span>
+      <span class="value">{{ iu.codiceFiscale }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Città</span>
+      <span class="value">{{ iu.citta }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Indirizzo</span>
+      <span class="value">{{ iu.indirizzo }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Telefono</span>
+      <span class="value">{{ iu.telefono || 'Non disponibile' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Ruolo</span>
+      <span class="value">{{ iu.role }}</span>
+    </div>
+  </div>
+
+  <ng-template #editInternal>
+    <div class="profile-form" *ngIf="editingInternalUser as edit">
+      <div class="form-grid">
+        <input [(ngModel)]="edit.nome" name="editNome" placeholder="Nome" required />
+        <input [(ngModel)]="edit.cognome" name="editCognome" placeholder="Cognome" required />
+        <input [(ngModel)]="edit.email" name="editEmail" placeholder="Email" type="email" required />
+        <input [(ngModel)]="edit.citta" name="editCitta" placeholder="Città" required />
+        <input [(ngModel)]="edit.indirizzo" name="editIndirizzo" placeholder="Indirizzo" required />
+        <input [(ngModel)]="edit.codiceFiscale" name="editCodiceFiscale" placeholder="Codice Fiscale" required />
+        <input [(ngModel)]="edit.telefono" name="editTelefono" placeholder="Telefono" required />
+      </div>
+
+      <div class="profile-actions">
+        <button class="primary" (click)="saveInternalProfile()" [disabled]="savingInternalUser">
+          {{ savingInternalUser ? 'Salvataggio…' : 'Salva modifiche' }}
+        </button>
+        <button class="secondary" (click)="cancelInternalProfile()">Annulla</button>
+      </div>
+    </div>
+  </ng-template>
+</section>

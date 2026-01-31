@@ -1,0 +1,36 @@
+<section class="referti">
+  <h1>I miei referti</h1>
+
+  <p *ngIf="loading">Caricamento referti...</p>
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <p *ngIf="!loading && !error && referti.length === 0" class="empty">
+    Nessun referto disponibile.
+  </p>
+
+  <div class="referti-list" *ngIf="!loading && !error && referti.length > 0">
+    <div class="referto-card" *ngFor="let r of referti">
+      <div class="thumb">
+        <img *ngIf="previewUrl(r.id)" [src]="previewUrl(r.id)" alt="Anteprima referto" />
+        <div *ngIf="!previewUrl(r.id)" class="thumb-fallback">
+          PDF
+        </div>
+      </div>
+      <div class="referto-main">
+        <h3>{{ r.filename }}</h3>
+        <p>
+          Caricato il {{ r.createdAt | date:'dd/MM/yyyy HH:mm' }}
+        </p>
+        <p class="meta">
+          Medico: {{ doctorName(r.doctorId) }} • {{ visitLabel(r.visitTypeId) }}
+        </p>
+        <p class="meta">
+          Prenotazione #{{ r.prenotationId }}
+        </p>
+      </div>
+      <button mat-button class="btn-download" (click)="download(r)">
+        Scarica
+      </button>
+    </div>
+  </div>
+</section>

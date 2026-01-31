@@ -1,0 +1,107 @@
+<div class="login-container">
+  <div class="login-shell">
+    <section class="login-visual">
+      <img src="/assets/logo/logo.png" alt="MedCare" class="login-logo" />
+      <h1>Benvenuto in MedCare</h1>
+      <p>
+        Accedi alla piattaforma sanitaria digitale per gestire prenotazioni,
+        referti e profili clinici in modo sicuro e veloce.
+      </p>
+      <ul class="login-highlights">
+        <li>
+          <mat-icon>event_available</mat-icon>
+          Prenotazioni smart e calendario digitale
+        </li>
+        <li>
+          <mat-icon>description</mat-icon>
+          Referti sempre disponibili
+        </li>
+        <li>
+          <mat-icon>security</mat-icon>
+          Dati protetti e tracciabili
+        </li>
+      </ul>
+    </section>
+
+    <mat-card class="login-card">
+      <div class="login-header">
+        <span class="badge">Accesso</span>
+        <h2>Accedi al portale</h2>
+        <p>Inserisci le credenziali per entrare nella tua area.</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" />
+          <mat-error *ngIf="form.get('username')?.invalid">
+            Username obbligatorio
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" />
+          <mat-error *ngIf="form.get('password')?.invalid">
+            Password obbligatoria
+          </mat-error>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          class="full login-btn"
+          type="submit"
+          [disabled]="form.invalid || loading"
+        >
+          <mat-progress-spinner
+            *ngIf="loading"
+            diameter="20"
+            mode="indeterminate"
+          ></mat-progress-spinner>
+
+          <span *ngIf="!loading">Accedi</span>
+        </button>
+
+        <p class="error" *ngIf="error">{{ error }}</p>
+      </form>
+
+      <div class="login-links">
+        <button type="button" class="link" (click)="toggleReset()">
+          Hai dimenticato la password?
+        </button>
+        <a class="link" routerLink="/registrazione">Registrati</a>
+      </div>
+
+      <div class="reset-panel" *ngIf="showReset">
+        <h3>Recupero credenziali</h3>
+        <p>Inserisci username o email. Riceverai una nuova password.</p>
+
+        <form [formGroup]="resetForm" (ngSubmit)="submitReset()">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Username o email</mat-label>
+            <input matInput formControlName="identifier" />
+            <mat-error *ngIf="resetForm.get('identifier')?.invalid">
+              Campo obbligatorio
+            </mat-error>
+          </mat-form-field>
+
+          <button
+            mat-raised-button
+            color="primary"
+            class="full login-btn"
+            type="submit"
+            [disabled]="resetForm.invalid || resetLoading"
+          >
+            <mat-progress-spinner
+              *ngIf="resetLoading"
+              diameter="20"
+              mode="indeterminate"
+            ></mat-progress-spinner>
+            <span *ngIf="!resetLoading">Invia nuova password</span>
+          </button>
+        </form>
+      </div>
+    </mat-card>
+  </div>
+</div>

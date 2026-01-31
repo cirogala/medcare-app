@@ -1,0 +1,221 @@
+<div class="dashboard">
+
+  <!-- HEADER -->
+  <section class="dash-header">
+    <div>
+      <h1>Dashboard Medico</h1>
+      <p>Benvenuto, <strong>{{ fullName }}</strong></p>
+    </div>
+
+    <div class="today">
+      {{ today | date:'fullDate' }}
+    </div>
+  </section>
+
+  <!-- AGENDA -->
+  <section class="agenda">
+    <div class="agenda-header">
+      <h2>Agenda</h2>
+      <div class="agenda-controls">
+        <input type="date" [(ngModel)]="agendaDate" (change)="loadDoctorSlots()" />
+        <label class="toggle">
+          <input type="checkbox" [(ngModel)]="showAvailableOnly" />
+          <span>Solo disponibili</span>
+        </label>
+      </div>
+    </div>
+
+    <p *ngIf="agendaLoading">Caricamento agenda...</p>
+    <p *ngIf="agendaError" class="error">{{ agendaError }}</p>
+    <p *ngIf="!agendaLoading && !agendaError && doctorSlots.length === 0" class="empty">
+      Nessuno slot disponibile per la data selezionata
+    </p>
+
+    <div class="slot-meta" *ngIf="!agendaLoading && !agendaError && doctorSlots.length > 0">
+      <span>{{ filteredSlots.length }} slot totali</span>
+      <button class="btn-secondary" *ngIf="hiddenSlotCount > 0" (click)="showAllSlots = true">
+        Mostra tutti (+{{ hiddenSlotCount }})
+      </button>
+      <button class="btn-secondary" *ngIf="showAllSlots && filteredSlots.length > slotsLimit" (click)="showAllSlots = false">
+        Mostra meno
+      </button>
+    </div>
+
+    <div class="slot-list" *ngIf="!agendaLoading && !agendaError && doctorSlots.length > 0">
+      <div class="slot-item" *ngFor="let s of visibleSlots">
+        <div class="slot-time">
+          {{ s.startTime }} - {{ s.endTime }}
+        </div>
+        <div class="slot-status"
+             [class.available]="s.available"
+             [class.booked]="s.booked">
+          {{ s.booked ? 'Prenotato' : (s.available ? 'Disponibile' : 'Non disponibile') }}
+        </div>
+        <button class="btn-secondary" (click)="toggleSlot(s)" [disabled]="s.booked">
+          {{ s.available ? 'Disattiva' : 'Attiva' }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI -->
+  <section class="kpi-grid">
+
+    <div class="kpi-card">
+      <span class="kpi-value">{{ todayVisits }}</span>
+      <span class="kpi-label">Visite oggi</span>
+    </div>
+
+    <div class="kpi-card">
+      <span class="kpi-value">{{ weekVisits }}</span>
+      <span class="kpi-label">Settimana</span>
+    </div>
+
+    <div class="kpi-card">
+      <span class="kpi-value">{{ pendingReports }}</span>
+      <span class="kpi-label">Referti da caricare</span>
+    </div>
+
+  </section>
+
+  <!-- PRENOTAZIONI -->
+  <section class="appointments">
+    <div class="appointments-header">
+      <h2>Prenotazioni</h2>
+      <div class="switch">
+        <button
+          class="switch-btn"
+          [class.active]="!showCompletedAppointments"
+          (click)="showCompletedAppointments = false; buildAppointments()">
+          Da sostenere ({{ activeAppointmentsCount }})
+        </button>
+        <button
+          class="switch-btn"
+          [class.active]="showCompletedAppointments"
+          (click)="showCompletedAppointments = true; buildAppointments()">
+          Completate ({{ completedAppointmentsCount }})
+        </button>
+      </div>
+    </div>
+
+    <p *ngIf="appointments.length === 0" class="empty">
+      {{ showCompletedAppointments ? 'Nessuna prenotazione completata' : 'Nessuna prenotazione da sostenere' }}
+    </p>
+
+    <div class="appointment-card"
+         *ngFor="let a of appointments">
+
+      <div class="patient">
+        <strong>{{ a.patientName }}</strong>
+        <span>{{ a.exam }}</span>
+      </div>
+
+      <div class="date">
+        {{ a.date | date:'dd/MM/yyyy HH:mm' }}
+      </div>
+
+      <div class="status" [class.completed]="a.completed">
+        {{ a.completed ? 'Completata' : 'Da svolgere' }}
+      </div>
+
+      <div class="actions">
+        <button class="btn-secondary"
+                *ngIf="hasReport(a.prenotationId)"
+                (click)="downloadReport(a)">
+          Visualizza referto
+        </button>
+        <button class="btn-secondary"
+                *ngIf="hasAnamnesi(a.prenotationId)"
+                (click)="openAnamnesiViewer(a)">
+          Visualizza anamnesi
+        </button>
+        <button class="btn-secondary"
+                (click)="openAnamnesi(a)">
+          {{ hasAnamnesi(a.prenotationId) ? 'Modifica anamnesi' : 'Compila anamnesi' }}
+        </button>
+        <button class="btn-secondary"
+                (click)="openUpload(a)">
+          {{ a.completed ? 'Cambia referto' : 'Carica referto' }}
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="modal-backdrop" *ngIf="showAnamnesiForm">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Anamnesi</h3>
+        <button class="icon-btn" (click)="cancelAnamnesi()">✕</button>
+      </div>
+      <p class="modal-subtitle">
+        Compila il questionario clinico per {{ selectedAnamnesi?.patientName }}.
+      </p>
+      <div class="modal-body">
+        <label>
+          Motivo della visita
+          <textarea [(ngModel)]="anamnesiForm.motivo" rows="3"></textarea>
+        </label>
+        <label>
+          Terapie in corso
+          <textarea [(ngModel)]="anamnesiForm.terapie" rows="2"></textarea>
+        </label>
+        <label>
+          Allergie note
+          <textarea [(ngModel)]="anamnesiForm.allergie" rows="2"></textarea>
+        </label>
+        <label>
+          Note aggiuntive
+          <textarea [(ngModel)]="anamnesiForm.note" rows="3"></textarea>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="cancelAnamnesi()">Annulla</button>
+        <button class="btn-primary" [disabled]="submittingAnamnesi" (click)="submitAnamnesi()">
+          {{ submittingAnamnesi ? 'Salvataggio…' : 'Salva anamnesi' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="showAnamnesiViewer">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Anamnesi</h3>
+        <button class="icon-btn" (click)="closeAnamnesiViewer()">✕</button>
+      </div>
+      <p class="modal-subtitle">
+        {{ selectedAnamnesi?.patientName }} · {{ selectedAnamnesi?.exam }}
+      </p>
+      <div class="modal-body">
+        <p *ngIf="anamnesiLoading">Caricamento anamnesi...</p>
+        <div *ngIf="!anamnesiLoading && anamnesiParsed; else rawAnamnesi" class="anamnesi-grid">
+          <div class="anamnesi-block">
+            <span class="anamnesi-label">Motivo della visita</span>
+            <p>{{ anamnesiParsed.motivo || 'Non specificato' }}</p>
+          </div>
+          <div class="anamnesi-block">
+            <span class="anamnesi-label">Terapie in corso</span>
+            <p>{{ anamnesiParsed.terapie || 'Non specificate' }}</p>
+          </div>
+          <div class="anamnesi-block">
+            <span class="anamnesi-label">Allergie note</span>
+            <p>{{ anamnesiParsed.allergie || 'Non specificate' }}</p>
+          </div>
+          <div class="anamnesi-block">
+            <span class="anamnesi-label">Note aggiuntive</span>
+            <p>{{ anamnesiParsed.note || 'Non specificate' }}</p>
+          </div>
+        </div>
+        <ng-template #rawAnamnesi>
+          <pre *ngIf="!anamnesiLoading">{{ anamnesiContent }}</pre>
+        </ng-template>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="downloadAnamnesi(selectedAnamnesi)">Scarica</button>
+        <button class="btn-primary" (click)="closeAnamnesiViewer()">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+</div>

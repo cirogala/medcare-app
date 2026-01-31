@@ -1,0 +1,298 @@
+<div class="home">
+
+  <!-- HERO -->
+  <section class="hero" @fadeSlide>
+    <div class="hero-content">
+
+      <img
+        src="/assets/logo/logo.png"
+        alt="MedCare"
+        class="hero-logo"
+      />
+
+      <h1 class="hero-title">Servizi sanitari digitali</h1>
+
+      <p class="hero-subtitle">
+        Gestisci prenotazioni, profili clinici e servizi sanitari
+        in un’unica piattaforma digitale sicura e certificata.
+      </p>
+
+      <!-- NON LOGGATO -->
+      <div *ngIf="!isLogged" class="hero-actions">
+        <button class="btn-primary" routerLink="/login">
+          Accedi al portale
+        </button>
+        <button class="btn-secondary" routerLink="/registrazione">
+          Registrati
+        </button>
+      </div>
+
+      <!-- LOGGATO -->
+      <div *ngIf="isLogged" class="logged-box">
+        <span class="badge-role">{{ role }}</span>
+
+        <p class="welcome">Benvenuto</p>
+        <h2 class="fullname">{{ fullName }}</h2>
+
+        <button class="btn-primary" routerLink="/dashboard">
+          Vai alla tua area
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section class="news" @fadeSlide>
+    <div class="news-header">
+      <h2>Ultime news</h2>
+      <p>Novità, aggiornamenti e iniziative MedCare.</p>
+    </div>
+    <div class="news-grid">
+      <article class="news-card">
+        <span class="news-tag">Servizi</span>
+        <h3>Prenotazioni più rapide</h3>
+        <p>Nuovi slot intelligenti per ridurre i tempi di attesa nelle visite specialistiche.</p>
+        <span class="news-date">10 Gen 2026</span>
+      </article>
+      <article class="news-card">
+        <span class="news-tag">Sicurezza</span>
+        <h3>Nuovi standard di protezione</h3>
+        <p>Attivato un monitoraggio continuo per garantire conformità e tracciabilità.</p>
+        <span class="news-date">07 Gen 2026</span>
+      </article>
+      <article class="news-card">
+        <span class="news-tag">Ricerca</span>
+        <h3>MedCare Analytics</h3>
+        <p>Report avanzati per supportare le decisioni cliniche e organizzative.</p>
+        <span class="news-date">02 Gen 2026</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- QUICK STATS -->
+  <section class="quick-stats" @fadeSlide>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-value">+120</span>
+        <span class="stat-label">Medici attivi</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">24/7</span>
+        <span class="stat-label">Accesso ai servizi</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">-35%</span>
+        <span class="stat-label">Tempo medio di prenotazione</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" @listFade>
+    <h2 class="section-title">Cosa puoi fare con MedCare</h2>
+
+    <div class="services-grid">
+
+      <div class="service-card">
+        <mat-icon class="service-icon">event</mat-icon>
+        <h3>Prenotazioni</h3>
+        <p>
+          Pianifica e gestisci visite, esami e appuntamenti
+          in modo rapido e centralizzato.
+        </p>
+      </div>
+
+      <div class="service-card">
+        <mat-icon class="service-icon">person</mat-icon>
+        <h3>Profili pazienti</h3>
+        <p>
+          Consulta e aggiorna in sicurezza
+          dati anagrafici e clinici.
+        </p>
+      </div>
+
+      <div class="service-card">
+        <mat-icon class="service-icon">security</mat-icon>
+        <h3>Sicurezza</h3>
+        <p>
+          Protezione dei dati sanitari
+          con standard di sicurezza avanzati.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="journey" @fadeSlide>
+    <h2 class="section-title">Come funziona</h2>
+    <div class="journey-steps">
+      <div class="step-card">
+        <div class="step-icon">
+          <mat-icon>login</mat-icon>
+        </div>
+        <h3>Accedi o registrati</h3>
+        <p>Crea il tuo profilo e accedi al portale in pochi minuti.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">
+          <mat-icon>event_available</mat-icon>
+        </div>
+        <h3>Prenota la visita</h3>
+        <p>Seleziona specializzazione, medico e slot disponibili.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">
+          <mat-icon>description</mat-icon>
+        </div>
+        <h3>Ricevi il referto</h3>
+        <p>Scarica i referti e resta aggiornato sul tuo percorso.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLES -->
+  <section class="roles" @fadeSlide>
+    <h2 class="section-title">Un portale per ogni ruolo</h2>
+    <div class="roles-grid">
+      <div class="role-card">
+        <span class="role-badge">Paziente</span>
+        <h3>Gestione completa del tuo percorso</h3>
+        <p>Prenota visite, scarica referti e monitora lo storico in un’unica area.</p>
+      </div>
+      <div class="role-card">
+        <span class="role-badge">Medico</span>
+        <h3>Agenda digitale e referti</h3>
+        <p>Organizza gli slot, gestisci le prenotazioni e carica i referti.</p>
+      </div>
+      <div class="role-card">
+        <span class="role-badge">Admin</span>
+        <h3>Controllo e governance</h3>
+        <p>Monitora utenti, flussi operativi e qualità del servizio.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY -->
+  <section class="security" @fadeSlide>
+    <div class="security-card">
+      <div class="security-text">
+        <h2>Sicurezza e conformità</h2>
+        <p>
+          Tutti i dati sono gestiti secondo standard di sicurezza elevati,
+          con tracciabilità completa delle operazioni.
+        </p>
+      </div>
+      <div class="security-icons">
+        <div class="security-pill">
+          <mat-icon>verified_user</mat-icon>
+          <span>GDPR</span>
+        </div>
+        <div class="security-pill">
+          <mat-icon>lock</mat-icon>
+          <span>Accessi protetti</span>
+        </div>
+        <div class="security-pill">
+          <mat-icon>shield</mat-icon>
+          <span>Audit continuo</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" @fadeSlide>
+    <div class="about-card">
+      <div class="about-text">
+        <h2>Chi siamo</h2>
+        <p>
+          MedCare è una piattaforma digitale per la gestione dei servizi sanitari,
+          progettata per semplificare l’esperienza di pazienti, medici e strutture.
+          Il nostro obiettivo è ridurre tempi di attesa, migliorare la tracciabilità
+          e rendere le informazioni cliniche sempre accessibili in sicurezza.
+        </p>
+        <p>
+          Lavoriamo con un team multidisciplinare e un approccio data‑driven per
+          offrire soluzioni moderne, scalabili e orientate alla qualità.
+        </p>
+      </div>
+      <div class="about-highlights">
+        <div class="highlight">
+          <span class="highlight-value">+250</span>
+          <span class="highlight-label">Strutture integrate</span>
+        </div>
+        <div class="highlight">
+          <span class="highlight-value">98%</span>
+          <span class="highlight-label">Soddisfazione utenti</span>
+        </div>
+        <div class="highlight">
+          <span class="highlight-value">1.2M</span>
+          <span class="highlight-label">Prenotazioni gestite</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTS -->
+  <section class="contacts" @fadeSlide>
+    <div class="contacts-card">
+      <div class="contacts-text">
+        <h2>Contatti</h2>
+        <p>Hai bisogno di supporto o vuoi maggiori informazioni? Siamo qui.</p>
+      </div>
+      <div class="contacts-grid">
+        <div class="contact-item">
+          <mat-icon>mail</mat-icon>
+          <div>
+            <span class="contact-label">Email</span>
+            <span class="contact-value">supporto@medcare.it</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <mat-icon>call</mat-icon>
+          <div>
+            <span class="contact-label">Telefono</span>
+            <span class="contact-value">+39 081 123 4567</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <mat-icon>location_on</mat-icon>
+          <div>
+            <span class="contact-label">Sede</span>
+            <span class="contact-value">Via Sanità 25, Napoli</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <mat-icon>schedule</mat-icon>
+          <div>
+            <span class="contact-label">Orari</span>
+            <span class="contact-value">Lun–Ven, 9:00–18:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" @fadeSlide>
+    <div class="cta-card">
+      <h2>Pronto a iniziare?</h2>
+      <p>Centralizza prenotazioni, referti e gestione utenti in un’unica piattaforma.</p>
+      <div class="cta-actions">
+        <button class="btn-primary" routerLink="/registrazione">
+          Crea un account
+        </button>
+        <button class="btn-secondary" routerLink="/login">
+          Accedi
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="home-footer">
+    © 2026 MedCare – Sistema informativo sanitario digitale · P. IVA 01234567890 · Capitale sociale € 10.000.000 i.v.
+  </footer>
+
+</div>

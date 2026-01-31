@@ -1,0 +1,121 @@
+<section class="card card-elevated">
+  <div class="card-header">
+    <div>
+      <h2 class="card-title">Prenotazioni</h2>
+      <p class="card-subtitle">Gestisci visite attive, storico e pagamenti</p>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn" [class.active]="selectedTab === 'active'" (click)="setTab('active')">
+        Attive
+      </button>
+      <button class="tab-btn" [class.active]="selectedTab === 'history'" (click)="setTab('history')">
+        Storico
+      </button>
+      <button class="tab-btn" [class.active]="selectedTab === 'pending'" (click)="setTab('pending')">
+        Da pagare
+      </button>
+      <button class="tab-btn" [class.active]="selectedTab === 'paid'" (click)="setTab('paid')">
+        Pagate
+      </button>
+    </div>
+
+    <div class="search">
+      <input
+        type="number"
+        placeholder="Cerca ID prenotazione"
+        [(ngModel)]="searchId"
+        (input)="currentPage = 1" />
+    </div>
+  </div>
+
+  <div *ngIf="loadingPrenotations" class="state">Caricamento prenotazioni...</div>
+  <div *ngIf="errorPrenotations" class="error">Errore nel caricamento delle prenotazioni</div>
+
+    <div class="prenotations-list" *ngIf="!loadingPrenotations && !errorPrenotations">
+      <p *ngIf="filteredPrenotations.length === 0" class="empty">
+        Nessuna prenotazione disponibile
+      </p>
+
+    <div class="prenotation-item" *ngFor="let p of paginatedPrenotations">
+      <div class="prenotation-info">
+        <h3>Prenotazione #{{ p.prenotationId }}</h3>
+        <p>{{ appointmentDate(p) | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p>Medico: {{ doctorName(p.doctorId) }}</p>
+        <p>Paziente: {{ patientName(p.userId) }}</p>
+        <p>Visita: {{ visitLabel(p.visitTypeId) }} • {{ visitDuration(p.visitTypeId) }} • {{ visitPrice(p.visitTypeId) }}</p>
+      </div>
+      <div class="prenotation-badges">
+        <span class="badge status" [class.active]="p.status === 'ACTIVE'" [class.completed]="p.status === 'COMPLETED'" [class.cancelled]="p.status === 'CANCELLED'">
+          {{ formatPrenotationStatus(p.status) }}
+        </span>
+        <span class="badge payment" [class.paid]="paymentStatus(p.prenotationId) === 'PAID'" [class.pending]="paymentStatus(p.prenotationId) === 'PENDING'" [class.refunded]="paymentStatus(p.prenotationId) === 'REFUNDED'">
+          {{ formatPaymentStatus(paymentStatus(p.prenotationId)) }}
+        </span>
+      </div>
+    </div>
+
+    <div class="pagination" *ngIf="filteredPrenotations.length > pageSize">
+      <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+        ‹
+      </button>
+      <button
+        class="page-btn"
+        *ngFor="let page of visiblePages"
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+      <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+        ›
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="card card-elevated">
+  <h2 class="card-title">Tipologie di visita</h2>
+
+  <div class="table-wrapper" *ngIf="visits.length > 0; else emptyVisits">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Codice</th>
+          <th>Descrizione</th>
+          <th>Durata</th>
+          <th>Prezzo</th>
+          <th>Attiva</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let v of visits">
+          <td class="id">{{ v.visitId }}</td>
+
+          <td>
+            <strong>{{ v.code }}</strong>
+          </td>
+
+          <td>{{ v.description }}</td>
+
+          <td>{{ v.durationMin }} min</td>
+
+          <td>{{ v.price | currency:'EUR' }}</td>
+
+          <td>
+            <span
+              class="badge"
+              [ngClass]="!v.flagDeleted ? 'badge-active' : 'badge-inactive'"
+            >
+              {{ !v.flagDeleted ? 'Attiva' : 'Disattiva' }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #emptyVisits>
+    <p class="empty">Nessuna visita disponibile</p>
+  </ng-template>
+</section>

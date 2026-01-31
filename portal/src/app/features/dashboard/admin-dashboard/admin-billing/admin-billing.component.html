@@ -1,0 +1,238 @@
+<section class="admin-billing">
+  <div class="billing-header">
+    <div>
+      <h1 class="billing-title">Dashboard Economica</h1>
+      <p class="billing-subtitle">Panoramica ricavi e pagamenti</p>
+    </div>
+    <div class="filters">
+      <label class="filter-field">
+        <span>Dal</span>
+        <input type="date" [(ngModel)]="fromDate" (change)="loadData()" />
+      </label>
+      <label class="filter-field">
+        <span>Al</span>
+        <input type="date" [(ngModel)]="toDate" (change)="loadData()" />
+      </label>
+      <label class="filter-field">
+        <span>Gruppo</span>
+        <select [(ngModel)]="revenueGroup" (change)="loadData()">
+          <option value="day">Giorno</option>
+          <option value="week">Settimana</option>
+          <option value="month">Mese</option>
+        </select>
+      </label>
+      <button type="button" class="primary-btn" (click)="loadData()">Aggiorna</button>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">Caricamento dati...</div>
+  <div class="error" *ngIf="error">{{ error }}</div>
+
+  <div class="kpi-grid" *ngIf="overview && !loading">
+    <div class="kpi-card">
+      <p>Ricavi attesi</p>
+      <h3>{{ overview.totalExpectedAmount | currency:'EUR' }}</h3>
+    </div>
+    <div class="kpi-card">
+      <p>Ricavi incassati</p>
+      <h3>{{ overview.totalPaidAmount | currency:'EUR' }}</h3>
+    </div>
+    <div class="kpi-card">
+      <p>Ticket medio</p>
+      <h3>{{ overview.averageTicket | currency:'EUR' }}</h3>
+    </div>
+    <div class="kpi-card">
+      <p>Visite totali</p>
+      <h3>{{ overview.totalVisits }}</h3>
+    </div>
+  </div>
+
+  <div class="summary-grid" *ngIf="paymentSummary && !loading">
+    <div class="summary-card">
+      <h4>Pagamenti</h4>
+      <div class="summary-row">
+        <span>Pagati</span>
+        <strong>{{ paymentSummary.paidCount }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Da incassare</span>
+        <strong>{{ paymentSummary.pendingCount }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Rimborsi</span>
+        <strong>{{ paymentSummary.refundedCount }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Totale incassato</span>
+        <strong>{{ paymentSummary.totalPaidAmount | currency:'EUR' }}</strong>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <h4>Ricavi per periodo</h4>
+      <div class="revenue-list" *ngIf="revenuePoints.length; else noRevenue">
+        <div class="revenue-item" *ngFor="let item of revenuePoints; trackBy: trackByLabel">
+          <span>{{ item.label }}</span>
+          <strong>{{ item.totalAmount | currency:'EUR' }}</strong>
+        </div>
+      </div>
+      <ng-template #noRevenue>
+        <p class="empty">Nessun ricavo disponibile.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="chart-grid" *ngIf="!loading">
+    <div class="panel chart-panel">
+      <h4>Grafico ricavi ({{ revenueGroup | uppercase }})</h4>
+      <div class="bar-chart" *ngIf="revenuePoints.length; else noChartRevenue">
+        <div class="bar-row" *ngFor="let item of revenuePoints; trackBy: trackByLabel">
+          <span class="bar-label">{{ item.label }}</span>
+          <div class="bar-track">
+            <div
+              class="bar-fill"
+              [style.width.%]="(item.totalAmount / (getMaxRevenuePoints() || 1)) * 100">
+            </div>
+          </div>
+          <span class="bar-value">{{ item.totalAmount | currency:'EUR' }}</span>
+        </div>
+      </div>
+      <ng-template #noChartRevenue>
+        <p class="empty">Nessun dato disponibile.</p>
+      </ng-template>
+    </div>
+
+    <div class="panel chart-panel">
+      <h4>Specializzazioni (top ricavi)</h4>
+      <div class="bar-chart" *ngIf="revenueBySpecialization.length; else noChartSpec">
+        <div class="bar-row" *ngFor="let item of revenueBySpecialization; trackBy: trackBySpec">
+          <span class="bar-label">{{ item.specialization }}</span>
+          <div class="bar-track">
+            <div
+              class="bar-fill accent"
+              [style.width.%]="(item.totalAmount / (getMaxBySpecialization() || 1)) * 100">
+            </div>
+          </div>
+          <span class="bar-value">{{ item.totalAmount | currency:'EUR' }}</span>
+        </div>
+      </div>
+      <ng-template #noChartSpec>
+        <p class="empty">Nessun dato disponibile.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="panel chart-panel" *ngIf="!loading">
+    <h4>Top medici per ricavi</h4>
+    <div class="bar-chart" *ngIf="revenueByDoctor.length; else noChartDoctor">
+      <div class="bar-row" *ngFor="let item of revenueByDoctor; trackBy: trackByDoctor">
+        <span class="bar-label">{{ item.doctorName || ('Medico #' + item.doctorId) }}</span>
+        <div class="bar-track">
+          <div
+            class="bar-fill success"
+            [style.width.%]="(item.totalAmount / (getMaxByDoctor() || 1)) * 100">
+          </div>
+        </div>
+        <span class="bar-value">{{ item.totalAmount | currency:'EUR' }}</span>
+      </div>
+    </div>
+    <ng-template #noChartDoctor>
+      <p class="empty">Nessun dato disponibile.</p>
+    </ng-template>
+  </div>
+
+  <div class="split-grid" *ngIf="!loading">
+    <div class="panel">
+      <h4>Ricavi per specializzazione</h4>
+      <div class="revenue-list" *ngIf="revenueBySpecialization.length; else noSpec">
+        <div class="revenue-item" *ngFor="let item of revenueBySpecialization; trackBy: trackBySpec">
+          <span>{{ item.specialization }}</span>
+          <strong>{{ item.totalAmount | currency:'EUR' }}</strong>
+        </div>
+      </div>
+      <ng-template #noSpec>
+        <p class="empty">Nessun dato disponibile.</p>
+      </ng-template>
+    </div>
+
+    <div class="panel">
+      <h4>Ricavi per medico</h4>
+      <div class="revenue-list" *ngIf="revenueByDoctor.length; else noDoctor">
+        <div class="revenue-item" *ngFor="let item of revenueByDoctor; trackBy: trackByDoctor">
+          <span>{{ item.doctorName || ('Medico #' + item.doctorId) }}</span>
+          <strong>{{ item.totalAmount | currency:'EUR' }}</strong>
+        </div>
+      </div>
+      <ng-template #noDoctor>
+        <p class="empty">Nessun dato disponibile.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="panel payments-panel" *ngIf="!loading">
+    <div class="payments-header">
+      <h4>Pagamenti visita</h4>
+      <div class="toggle-group">
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="paymentStatusFilter === 'PENDING'"
+          (click)="setPaymentFilter('PENDING')">
+          In attesa
+        </button>
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="paymentStatusFilter === 'PAID'"
+          (click)="setPaymentFilter('PAID')">
+          Pagati
+        </button>
+      </div>
+    </div>
+    <div class="payments-table" *ngIf="payments.length; else noPayments">
+      <div class="payments-row header">
+        <span>Prenotazione</span>
+        <span>Importo</span>
+        <span>Stato</span>
+        <span>Azione</span>
+      </div>
+      <div class="payments-row" *ngFor="let payment of payments">
+        <span>#{{ payment.prenotationId }}</span>
+        <span>{{ payment.amount | currency:'EUR' }}</span>
+        <span class="status" [class.paid]="payment.status === 'PAID'"
+          [class.pending]="payment.status === 'PENDING'"
+          [class.refunded]="payment.status === 'REFUNDED'">
+          {{ formatPaymentStatus(payment.status) }}
+        </span>
+        <span>
+          <div class="action-group">
+            <button
+              class="ghost-btn"
+              [disabled]="payment.status !== 'PENDING' || updatingPaymentId === payment.prenotationId"
+              (click)="markPaid(payment)">
+              Segna pagato
+            </button>
+            <button
+              type="button"
+              class="menu-btn"
+              (click)="toggleActionMenu(payment.prenotationId)">
+              ⋯
+            </button>
+            <div class="action-menu" *ngIf="actionMenuOpenId === payment.prenotationId">
+              <button
+                type="button"
+                class="menu-item"
+                [disabled]="payment.status !== 'PAID' || updatingPaymentId === payment.prenotationId"
+                (click)="markRefunded(payment)">
+                Emetti rimborso
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+    <ng-template #noPayments>
+      <p class="empty">Nessun pagamento disponibile per i filtri selezionati.</p>
+    </ng-template>
+  </div>
+</section>

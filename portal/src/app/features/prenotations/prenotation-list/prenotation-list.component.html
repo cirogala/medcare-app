@@ -1,0 +1,70 @@
+<section class="prenotazioni-page">
+  <header class="page-header">
+    <h1>Le mie prenotazioni</h1>
+    <p>Seleziona lo stato delle prenotazioni da visualizzare</p>
+    <div class="switch">
+      <button
+        class="switch-btn"
+        [class.active]="!showCompleted"
+        (click)="showCompleted = false">
+        Da sostenere
+      </button>
+      <button
+        class="switch-btn"
+        [class.active]="showCompleted"
+        (click)="showCompleted = true">
+        Completate
+      </button>
+    </div>
+  </header>
+
+  <p *ngIf="loading">Caricamento...</p>
+  <p *ngIf="error" class="error">
+    Errore nel recupero delle prenotazioni
+  </p>
+
+  <section class="card active-card" *ngIf="!loading && !error">
+    <h2>{{ showCompleted ? 'Prenotazioni completate' : 'Prenotazioni da sostenere' }}</h2>
+
+    <p *ngIf="filteredPrenotations.length === 0" class="empty">
+      {{ showCompleted ? 'Nessuna prenotazione completata' : 'Nessuna prenotazione da sostenere' }}
+    </p>
+
+    <div class="list" *ngIf="filteredPrenotations.length > 0">
+      <div class="item" *ngFor="let p of filteredPrenotations">
+        <div class="info">
+          <div class="title">Prenotazione #{{ p.prenotationId }}</div>
+          <div class="meta">
+            {{ appointmentDate(p) | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+          <div class="meta">
+            Medico: {{ doctorName(p.doctorId) }} • {{ doctorSpecialization(p.doctorId) }}
+          </div>
+          <div class="meta">
+            Paziente: {{ patientName(p.userId) }}
+          </div>
+          <div class="meta">
+            Visita: {{ visitLabel(p.visitTypeId) }} • {{ visitDuration(p.visitTypeId) }} • {{ visitPrice(p.visitTypeId) }}
+          </div>
+        </div>
+
+        <div class="actions">
+          <span [class]="badgeClass(p.status)">
+            {{ formatStatus(p.status) }}
+          </span>
+          <button *ngIf="p.status === 'ACTIVE'" (click)="cancel(p.prenotationId)">Annulla</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card new-booking">
+    <div class="new-booking-text">
+      <h2>Nuova prenotazione</h2>
+      <p>Seleziona tipologia e slot disponibile per prenotare una visita.</p>
+    </div>
+    <a routerLink="/doctors" class="btn-primary">
+      Crea nuova prenotazione
+    </a>
+  </section>
+</section>

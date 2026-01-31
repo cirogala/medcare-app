@@ -1,0 +1,255 @@
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 32px;
+}
+
+.card-elevated {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+}
+
+.card-title {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #1f2937;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.card-subtitle {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.tabs {
+  display: inline-flex;
+  background: #f3f4f6;
+  border-radius: 999px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+}
+
+.search input {
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  min-width: 180px;
+}
+
+.tab-btn {
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.tab-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+}
+
+.prenotations-list {
+  display: grid;
+  gap: 16px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.page-btn {
+  border: none;
+  background: #f3f4f6;
+  color: #4b5563;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.page-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.prenotation-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.prenotation-info h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: #111827;
+}
+
+.prenotation-info p {
+  margin: 2px 0;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.prenotation-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.badge.status.active {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.badge.status.completed {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.badge.status.cancelled {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.badge.payment.paid {
+  background: #ecfdf3;
+  color: #047857;
+}
+
+.badge.payment.pending {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.badge.payment.refunded {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.state {
+  padding: 12px;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+}
+
+.users-table thead th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.users-table tbody tr {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.users-table tbody td {
+  padding: 14px 12px;
+  vertical-align: middle;
+}
+
+.users-table tbody tr td:first-child {
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+
+.users-table tbody tr td:last-child {
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+.users-table td.id {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.users-table td strong {
+  font-weight: 600;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-active {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.badge-inactive {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.empty {
+  color: #6b7280;
+  font-style: italic;
+  text-align: center;
+}
+
+.users-table tbody tr:hover {
+  transform: translateY(-2px);
+  transition: transform 0.15s ease;
+}
+
+@media (max-width: 720px) {
+  .prenotation-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .prenotation-badges {
+    flex-direction: row;
+    align-items: center;
+  }
+}

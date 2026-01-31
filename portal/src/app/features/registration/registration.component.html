@@ -1,0 +1,81 @@
+<section class="card card-elevated">
+  <h2 class="card-title">Registrazione Paziente</h2>
+
+  <form
+    #form="ngForm"
+    class="form-grid"
+    (ngSubmit)="register(form)"
+  >
+
+    <input
+      [(ngModel)]="newUser.nome"
+      name="nome"
+      placeholder="Nome"
+      required
+    />
+
+    <input
+      [(ngModel)]="newUser.cognome"
+      name="cognome"
+      placeholder="Cognome"
+      required
+    />
+
+    <input
+      [(ngModel)]="newUser.email"
+      name="email"
+      placeholder="Email"
+      required
+      email
+    />
+
+    <input
+      [(ngModel)]="newUser.citta"
+      name="citta"
+      placeholder="Città"
+      required
+    />
+
+    <input
+      [(ngModel)]="newUser.indirizzo"
+      name="indirizzo"
+      placeholder="Indirizzo"
+      required
+    />
+
+    <input
+      [(ngModel)]="newUser.codiceFiscale"
+      name="codiceFiscale"
+      placeholder="Codice Fiscale"
+      required
+    />
+
+    <input
+      [(ngModel)]="newUser.telefono"
+      name="telefono"
+      placeholder="Telefono"
+      required
+    />
+
+    <button
+      type="submit"
+      [disabled]="creating || form.invalid"
+    >
+      {{ creating ? 'Registrazione...' : 'Registrati' }}
+    </button>
+
+  </form>
+
+  <p class="info">
+    Riceverai le credenziali via email al termine della registrazione.
+  </p>
+
+  <p class="error" *ngIf="errorMsg">
+    {{ errorMsg }}
+  </p>
+
+  <p class="success" *ngIf="success">
+    Registrazione completata! Controlla la tua email.
+    <span *ngIf="redirectSeconds > 0">Redirect alla home tra {{ redirectSeconds }}s…</span>
+  </p>
+</section>

@@ -1,0 +1,83 @@
+<h2>Medici disponibili</h2>
+
+<div class="actions-bar">
+  <a routerLink="/prenotations" class="btn-secondary">Le mie prenotazioni</a>
+</div>
+
+<p class="selected-doctor" *ngIf="selectedDoctorId">
+  Medico selezionato: <strong>{{ selectedDoctorName }}</strong>
+</p>
+
+<div class="booking-form">
+  <select
+    [(ngModel)]="visitTypeId"
+    [disabled]="visitsLoading || visitTypes.length === 0"
+    (ngModelChange)="onVisitTypeChange($event)">
+    <option [ngValue]="null" disabled>Tipologia di visita</option>
+    <option *ngFor="let v of visitTypes" [ngValue]="v.visitId">
+      {{ v.description }}
+    </option>
+  </select>
+  <input
+    type="date"
+    [(ngModel)]="bookingDate"
+    (ngModelChange)="onDateChange($event)" />
+  <select
+    [(ngModel)]="bookingTime"
+    [disabled]="!bookingDate"
+    (ngModelChange)="onTimeChange($event)">
+    <option value="" disabled>Seleziona orario</option>
+    <option *ngFor="let t of timeOptions" [value]="t">
+      {{ t }}
+    </option>
+  </select>
+
+  <button
+    class="btn-primary"
+    [disabled]="creating || !selectedDoctorId"
+    (click)="createPrenotation()">
+    Conferma prenotazione
+  </button>
+</div>
+
+<p *ngIf="visitsLoading">Caricamento tipologie visita...</p>
+<p *ngIf="visitsError" class="error">{{ visitsError }}</p>
+
+<p *ngIf="slotsLoading">Caricamento medici disponibili...</p>
+<p *ngIf="!slotsLoading && !slotsError && visitTypeId && bookingDate && bookingTime && filteredDoctors.length === 0" class="empty">
+  Nessun medico disponibile per data e ora selezionate
+</p>
+<p *ngIf="slotsError" class="error">{{ slotsError }}</p>
+
+
+<p *ngIf="loading">Caricamento...</p>
+<p *ngIf="error" class="error">Errore nel recupero dei medici</p>
+<p *ngIf="!loading && !error && !visitTypeId" class="empty">
+  Seleziona una tipologia di visita per vedere i medici disponibili
+</p>
+
+<p *ngIf="!loading && !error && visitTypeId && (!bookingDate || !bookingTime)" class="empty">
+  Seleziona data e ora per vedere i medici disponibili
+</p>
+
+<p *ngIf="!loading && !error && !createSuccess && visitTypeId && bookingDate && bookingTime && filteredDoctors.length === 0" class="empty">
+  Nessun medico disponibile per data e ora selezionate
+</p>
+
+<div class="grid" *ngIf="!loading && !error && visitTypeId && bookingDate && bookingTime && filteredDoctors.length > 0">
+  <div class="card" *ngFor="let d of filteredDoctors">
+    <h3>{{ fullName(d) || d.username }}</h3>
+    <div class="row" *ngIf="d.typeDoctor">
+      <strong>Specializzazione:</strong> {{ d.typeDoctor }}
+    </div>
+    <div class="row"><strong>Username:</strong> {{ d.username }}</div>
+    <div class="row"><strong>Email:</strong> {{ d.email }}</div>
+    <div class="row"><strong>Citta:</strong> {{ d.citta }}</div>
+    <button
+      class="btn-secondary"
+      (click)="selectDoctor(d)"
+      [class.selected]="selectedDoctorId === d.userId">
+      {{ selectedDoctorId === d.userId ? 'Medico selezionato' : 'Seleziona medico' }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+body {
+  color-scheme: light;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+}
+
+.mat-icon {
+  font-family: 'Material Symbols Outlined' !important;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.toast {
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.22);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  border: 1px solid rgba(37, 99, 235, 0.12);
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.toast-success {
+  border-color: rgba(5, 150, 105, 0.35);
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.toast-error {
+  border-color: rgba(220, 38, 38, 0.35);
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.cdk-overlay-container .cdk-overlay-pane.toast-center {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: min(520px, calc(100vw - 32px)) !important;
+}
+
+.mat-mdc-snack-bar-container.toast {
+  border-radius: 16px;
+}
+
+.mat-mdc-snack-bar-container.toast .mat-mdc-snack-bar-action {
+  color: #2563eb;
+  opacity: 0.9;
+  font-weight: 700;
+}
+
+.mat-mdc-snack-bar-container.toast.toast-success .mat-mdc-snack-bar-action {
+  color: #047857;
+}
+
+.mat-mdc-snack-bar-container.toast.toast-error .mat-mdc-snack-bar-action {
+  color: #b91c1c;
+}

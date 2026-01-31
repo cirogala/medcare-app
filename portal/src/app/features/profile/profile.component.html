@@ -1,0 +1,87 @@
+<section class="profile-page">
+  <div class="profile-shell">
+    <header class="profile-header">
+      <div class="avatar">
+        {{ profile?.nome?.charAt(0) }}{{ profile?.cognome?.charAt(0) }}
+      </div>
+      <div class="header-info">
+        <h1>Profilo utente</h1>
+        <p>Gestisci i tuoi dati personali</p>
+      </div>
+      <button
+        class="primary-btn"
+        *ngIf="profile && !editing"
+        (click)="startEdit()">
+        Modifica dati
+      </button>
+    </header>
+
+    <div *ngIf="loading" class="state">Caricamento profilo...</div>
+
+    <div *ngIf="error" class="error">
+      Errore nel caricamento del profilo
+    </div>
+
+    <div *ngIf="profile && editableProfile" class="profile-card">
+      <div class="field">
+        <label>Username</label>
+        <span *ngIf="!editing">{{ profile.username }}</span>
+        <input *ngIf="editing" [(ngModel)]="editableProfile.username" disabled />
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <span *ngIf="!editing">{{ profile.email }}</span>
+        <input *ngIf="editing" [(ngModel)]="editableProfile.email" />
+      </div>
+
+      <div class="field">
+        <label>Nome</label>
+        <span *ngIf="!editing">{{ profile.nome }}</span>
+        <input *ngIf="editing" [(ngModel)]="editableProfile.nome" />
+      </div>
+
+      <div class="field">
+        <label>Cognome</label>
+        <span *ngIf="!editing">{{ profile.cognome }}</span>
+        <input *ngIf="editing" [(ngModel)]="editableProfile.cognome" />
+      </div>
+
+      <div class="field">
+        <label>Telefono</label>
+        <span *ngIf="!editing">{{ profile.telefono || 'Non disponibile' }}</span>
+        <input *ngIf="editing" [(ngModel)]="editableProfile.telefono" />
+      </div>
+
+      <div class="field">
+        <label>Città</label>
+        <span *ngIf="!editing">{{ profile.citta }}</span>
+        <input *ngIf="editing" [(ngModel)]="editableProfile.citta" />
+      </div>
+
+      <div class="field">
+        <label>Indirizzo</label>
+        <span *ngIf="!editing">{{ profile.indirizzo }}</span>
+        <input *ngIf="editing" [(ngModel)]="editableProfile.indirizzo" />
+      </div>
+
+      <div class="field">
+        <label>Codice fiscale</label>
+        <span *ngIf="!editing">{{ profile.codiceFiscale }}</span>
+        <input *ngIf="editing" [(ngModel)]="editableProfile.codiceFiscale" />
+      </div>
+
+      <div class="field">
+        <label>Ruolo</label>
+        <span>{{ profile.role }}</span>
+      </div>
+
+      <div class="actions" *ngIf="editing">
+        <button class="secondary-btn" (click)="cancelEdit()">Annulla</button>
+        <button class="primary-btn" [disabled]="saving" (click)="save()">
+          {{ saving ? 'Salvataggio...' : 'Salva' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,82 @@
+<section class="card card-elevated">
+  <h2 class="card-title">Nuovo medico</h2>
+  <form class="form-grid" (ngSubmit)="createDoctor()">
+
+    <input [(ngModel)]="newDoctor.nome" name="nome" placeholder="Nome" required />
+    <input [(ngModel)]="newDoctor.cognome" name="cognome" placeholder="Cognome" required />
+    <input [(ngModel)]="newDoctor.email" name="email" placeholder="Email" type="email" required />
+
+    <input [(ngModel)]="newDoctor.citta" name="citta" placeholder="Città" required />
+    <input [(ngModel)]="newDoctor.indirizzo" name="indirizzo" placeholder="Indirizzo" required />
+    <input [(ngModel)]="newDoctor.codiceFiscale" name="codiceFiscale" placeholder="Codice Fiscale" required />
+    <input [(ngModel)]="newDoctor.telefono" name="telefono" placeholder="Telefono" required />
+    <select [(ngModel)]="newDoctor.typeDoctor" name="typeDoctor" required>
+      <option [ngValue]="''" disabled>Specializzazione</option>
+      <option *ngFor="let spec of specializations" [value]="spec.code">
+        {{ spec.label }}
+      </option>
+    </select>
+    
+    <label class="checkbox-modern">
+      <input type="checkbox" [(ngModel)]="newDoctor.isInternal" name="isInternal" />
+      <span>Medico interno</span>
+    </label>
+
+    <button type="submit" [disabled]="creating">
+      {{ creating ? 'Creazione in corso…' : 'Crea medico' }}
+    </button>
+  </form>
+
+  <p class="info">
+    Username e password verranno generati automaticamente e inviati via email.
+  </p>
+
+  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+</section>
+
+<section class="card card-elevated">
+  <h2 class="card-title">Medici registrati</h2>
+
+  <div class="table-wrapper" *ngIf="doctors.length > 0; else emptyDoctors">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Medico</th>
+          <th>Specializzazione</th>
+          <th>Email</th>
+          <th>Ruolo</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let d of doctors">
+          <td class="id">{{ d.userId }}</td>
+
+          <td class="name">
+            <div class="fullname">{{ d.nome }} {{ d.cognome }}</div>
+            <div class="username">{{ d.username }}</div>
+          </td>
+
+          <td>
+            <span class="badge badge-type">
+              {{ specializationLabel(d.typeDoctor) }}
+            </span>
+          </td>
+
+          <td>{{ d.email }}</td>
+
+          <td>
+            <span class="badge badge-role">
+              {{ d.role }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #emptyDoctors>
+    <p class="empty">Nessun medico registrato</p>
+  </ng-template>
+</section>

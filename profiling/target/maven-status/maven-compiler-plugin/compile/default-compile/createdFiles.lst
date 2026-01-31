@@ -1,0 +1,14 @@
+it/medcare/profiling/entity/Permission.class
+it/medcare/profiling/entity/User.class
+it/medcare/profiling/config/MedcareSecurityConfig.class
+it/medcare/profiling/entity/MdtRole.class
+it/medcare/profiling/service/UserService.class
+it/medcare/profiling/common/rest/MediaType.class
+it/medcare/profiling/controller/dtos/UserInternal.class
+it/medcare/profiling/repository/UserRepo.class
+it/medcare/profiling/controller/ProfilingController.class
+it/medcare/profiling/ProfilingApplication.class
+it/medcare/profiling/config/MedcareSecurityInterceptor.class
+it/medcare/profiling/common/rest/Headers.class
+it/medcare/profiling/entity/RolePermission.class
+it/medcare/profiling/config/WebConfig.class

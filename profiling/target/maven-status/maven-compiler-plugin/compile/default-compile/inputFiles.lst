@@ -1,0 +1,14 @@
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/ProfilingApplication.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/common/rest/Headers.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/common/rest/MediaType.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/config/MedcareSecurityConfig.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/config/MedcareSecurityInterceptor.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/config/WebConfig.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/controller/ProfilingController.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/controller/dtos/UserInternal.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/entity/MdtRole.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/entity/Permission.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/entity/RolePermission.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/entity/User.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/repository/UserRepo.java
+/Users/cirogalario/Desktop/workspace/profiling/src/main/java/it/medcare/profiling/service/UserService.java

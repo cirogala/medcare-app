@@ -126,6 +126,11 @@ ng serve --proxy-config proxy.conf.json
 Per inserire dati di test:
 
 - `data_setup/README.md`
+- `postman request POST 'http://localhost:8081/visits/slots/generate?doctorId=1' \
+  --header 'X-Medcare-Accept: application/medcare+v1.json' \
+  --header 'X-Medcare-KeyLogic: 123' \
+  --header 'X-Medcare-TransactionID: 123' \
+  --body ''`
 
 ## Note
 
